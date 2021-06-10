@@ -1,22 +1,36 @@
-<h2>Por país</h2>
-<hr>
+<div class="animate__animated animate__fadeIn">
+  <h2>Por país</h2>
+  <hr>
 
-<div class="row">
-  <div class="col">
-    <app-country-input
-      (onEnter)="search($event)"
-      (onDebounce)="showSuggestions($event)"
-      placeholder="Buscar país...">
-    </app-country-input>
+  <div class="row">
+    <div class="col">
+      <app-country-input
+        (onEnter)="search($event)"
+        (onDebounce)="showSuggestions($event)"
+        placeholder="Buscar país...">
+      </app-country-input>
+    </div>
   </div>
-</div>
 
-<hr>
+  <ul *ngIf="showSuggestionsList" class="list-group">
+    <li *ngFor="let country of suggestedCountries" class="list-group-item list-group-item-action">
+      <a class="nav-link" href="" [routerLink]="['/country-detail', country.alpha2Code]">{{country.name}}</a>
+    </li>
 
-<div *ngIf="isError" class="alert alert-danger">No se encontró nada con el término ABD</div>
+    <li
+      class="list-group-item list-group-item-action nav-link"
+      (click)=searchSuggested(termino)>
+      <a class="nav-link">Buscar "{{termino}}"</a>
+    </li>
+  </ul>
 
-<div *ngIf="countries.length > 0" class="row">
-  <div class="col">
-    <app-country-table [countries]="countries"></app-country-table>
+  <hr>
+
+  <div *ngIf="isError" class="alert alert-danger animate__animated animate__fadeIn">No se encontró nada con el término ABD</div>
+
+  <div *ngIf="countries.length > 0" class="row">
+    <div class="col animate__animated animate__fadeIn">
+      <app-country-table [countries]="countries"></app-country-table>
+    </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Country } from '../interfaces/country.interface';
 
 @Injectable({
@@ -9,13 +9,18 @@ import { Country } from '../interfaces/country.interface';
 })
 export class CountryService {
 
+  get getHttpParams() {
+    return new HttpParams()
+    .set('fields', 'name;capital;alpha2Code;flag;population');
+  }
+
   private apiUrl: string = "https://restcountries.eu/rest/v2";
 
   constructor(private httClient: HttpClient) { }
 
   searchCountry(termino: string): Observable<Country[]> {
     const url = `${this.apiUrl}/name/${termino}`;
-    return this.httClient.get<Country[]>(url);
+    return this.httClient.get<Country[]>(url, {params: this.getHttpParams});
 
     // Manejo del error desde el servicio. También se puede hacer desde el componente:
     //   return this.httClient.get(url)
@@ -27,12 +32,20 @@ export class CountryService {
 
   searchCapital(termino: string): Observable<Country[]> {
     const url = `${this.apiUrl}/capital/${termino}`;
-    return this.httClient.get<Country[]>(url);
+    return this.httClient.get<Country[]>(url, {params: this.getHttpParams});
   }
 
   getCountryById(id: string): Observable<Country> {
     const url = `${this.apiUrl}/alpha/${id}`;
     return this.httClient.get<Country>(url);
+  }
+
+  getCountriesByRegion(region: string): Observable<Country[]> {
+    const url = `${this.apiUrl}/region/${region}`;
+    return this.httClient.get<Country[]>(url, {params: this.getHttpParams})
+      .pipe(
+        tap(console.log)
+      );
   }
 
 }

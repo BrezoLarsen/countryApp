@@ -11,7 +11,9 @@ export class ByCountryComponent implements OnInit {
 
   termino: string = "";
   isError: boolean = false;
+  showSuggestionsList: boolean = false;
   countries: Country[] = [];
+  suggestedCountries: Country[] = [];
 
   constructor(private countryService: CountryService) { }
 
@@ -21,6 +23,7 @@ export class ByCountryComponent implements OnInit {
   search(termino: string) {
     this.isError = false;
     this.termino = termino;
+    this.showSuggestionsList = false;
 
     this.countryService.searchCountry(this.termino)
       .subscribe( (countries) => {
@@ -36,6 +39,17 @@ export class ByCountryComponent implements OnInit {
 
   showSuggestions(termino: string) {
     this.isError = false;
+    this.termino = termino;
+    this.showSuggestionsList = true;
+
+    this.countryService.searchCountry(termino)
+      .subscribe(
+        countries => this.suggestedCountries = countries.splice(0, 5),
+        (err) => this.suggestedCountries = [])
+  }
+
+  searchSuggested(termino: string) {
+    this.search(termino);
   }
 
 }
